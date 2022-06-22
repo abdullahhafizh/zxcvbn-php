@@ -9,7 +9,7 @@ use ZxcvbnPhp\Matcher;
 
 class YearMatch extends BaseMatch
 {
-    public const NUM_YEARS = 119;
+    const NUM_YEARS = 119;
 
     public $pattern = 'regex';
     public $regexName = 'recent_year';
@@ -21,7 +21,7 @@ class YearMatch extends BaseMatch
      * @param array $userInputs
      * @return YearMatch[]
      */
-    public static function match(string $password, array $userInputs = []): array
+    public static function match($password, $userInputs = [])
     {
         $matches = [];
         $groups = static::findAll($password, "/(19\d\d|200\d|201\d)/u");
@@ -33,7 +33,7 @@ class YearMatch extends BaseMatch
     }
 
     #[ArrayShape(['warning' => 'string', 'suggestions' => 'string[]'])]
-    public function getFeedback(bool $isSoleMatch): array
+    public function getFeedback($isSoleMatch)
     {
         return [
             'warning' => "Recent years are easy to guess",
@@ -44,7 +44,7 @@ class YearMatch extends BaseMatch
         ];
     }
 
-    protected function getRawGuesses(): float
+    protected function getRawGuesses()
     {
         $yearSpace = abs($this->token - DateMatch::getReferenceYear());
         return max($yearSpace, DateMatch::MIN_YEAR_SPACE);

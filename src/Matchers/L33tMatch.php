@@ -31,7 +31,7 @@ class L33tMatch extends DictionaryMatch
      * @param array $rankedDictionaries
      * @return L33tMatch[]
      */
-    public static function match(string $password, array $userInputs = [], array $rankedDictionaries = []): array
+    public static function match($password, $userInputs = [], $rankedDictionaries = [])
     {
         // Translate l33t password and dictionary match the translated password.
         $maps = array_filter(static::getL33tSubstitutions(static::getL33tSubtable($password)));
@@ -89,17 +89,23 @@ class L33tMatch extends DictionaryMatch
      * @param string $token
      * @param array $params An array with keys: [sub, sub_display].
      */
-    public function __construct(string $password, int $begin, int $end, string $token, array $params = [])
+    public function __construct($password, $begin, $end, $token, $params = [])
     {
         parent::__construct($password, $begin, $end, $token, $params);
         if (!empty($params)) {
-            $this->sub = $params['sub'] ?? [];
-            $this->subDisplay = $params['sub_display'] ?? null;
+            $sub = [];
+            if(!empty($params['sub'])) $sub = $params['sub'];
+            
+            $this->sub = $sub;
+
+            $subDisplay = null;
+            if(!empty($params['sub_display'])) $subDisplay = $params['sub_display'];
+            $this->subDisplay = $subDisplay;
         }
     }
 
     #[ArrayShape(['warning' => 'string', 'suggestions' => 'string[]'])]
-    public function getFeedback(bool $isSoleMatch): array
+    public function getFeedback($isSoleMatch)
     {
         $feedback = parent::getFeedback($isSoleMatch);
 
@@ -113,12 +119,12 @@ class L33tMatch extends DictionaryMatch
      * @param array  $map
      * @return string
      */
-    protected static function translate(string $string, array $map): string
+    protected static function translate($string, $map)
     {
         return str_replace(array_keys($map), array_values($map), $string);
     }
 
-    protected static function getL33tTable(): array
+    protected static function getL33tTable()
     {
         return [
             'a' => ['4', '@'],
@@ -136,7 +142,7 @@ class L33tMatch extends DictionaryMatch
         ];
     }
 
-    protected static function getL33tSubtable(string $password): array
+    protected static function getL33tSubtable($password)
     {
         // The preg_split call below is a multibyte compatible version of str_split
         $passwordChars = array_unique(preg_split('//u', $password, -1, PREG_SPLIT_NO_EMPTY));
@@ -155,20 +161,20 @@ class L33tMatch extends DictionaryMatch
         return $subTable;
     }
 
-    protected static function getL33tSubstitutions(array $subtable): array
+    protected static function getL33tSubstitutions($subtable)
     {
         $keys = array_keys($subtable);
         $substitutions = self::substitutionTableHelper($subtable, $keys, [[]]);
 
         // Converts the substitution arrays from [ [a, b], [c, d] ] to [ a => b, c => d ]
-        $substitutions = array_map(function (array $subArray): array {
+        $substitutions = array_map(function ($subArray) {
             return array_combine(array_column($subArray, 0), array_column($subArray, 1));
         }, $substitutions);
 
         return $substitutions;
     }
 
-    protected static function substitutionTableHelper(array $table, array $keys, array $subs): array
+    protected static function substitutionTableHelper($table, $keys, $subs)
     {
         if (empty($keys)) {
             return $subs;
@@ -206,12 +212,12 @@ class L33tMatch extends DictionaryMatch
         return self::substitutionTableHelper($table, $otherKeys, $nextSubs);
     }
 
-    protected function getRawGuesses(): float
+    protected function getRawGuesses()
     {
         return parent::getRawGuesses() * $this->getL33tVariations();
     }
 
-    protected function getL33tVariations(): float
+    protected function getL33tVariations()
     {
         $variations = 1;
 

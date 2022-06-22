@@ -181,7 +181,7 @@ class SequenceTest extends AbstractMatchTest
      * @param bool $ascending
      * @param float $expectedGuesses
      */
-    public function testGuesses(string $token, bool $ascending, float $expectedGuesses): void
+    public function testGuesses($token, $ascending, $expectedGuesses)
     {
         $match = new SequenceMatch($token, 0, strlen($token) - 1, $token, ['ascending' => $ascending]);
         $this->assertSame(

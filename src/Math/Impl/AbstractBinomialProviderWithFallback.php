@@ -11,16 +11,19 @@ abstract class AbstractBinomialProviderWithFallback extends AbstractBinomialProv
      */
     private $fallback = null;
 
-    protected function calculate(int $n, int $k): float
+    protected function calculate($n, $k)
     {
-        return  $this->tryCalculate($n, $k) ?? $this->getFallbackProvider()->calculate($n, $k);
+        $calculate = $this->tryCalculate($n, $k);
+        if(is_null($calculate)) $calculate = $this->getFallbackProvider()->calculate($n, $k);
+
+        return $calculate;
     }
 
-    abstract protected function tryCalculate(int $n, int $k): ?float;
+    abstract protected function tryCalculate($n, $k);
 
-    abstract protected function initFallbackProvider(): AbstractBinomialProvider;
+    abstract protected function initFallbackProvider();
 
-    protected function getFallbackProvider(): AbstractBinomialProvider
+    protected function getFallbackProvider()
     {
         if ($this->fallback === null) {
             $this->fallback = $this->initFallbackProvider();

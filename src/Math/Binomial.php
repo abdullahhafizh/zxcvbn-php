@@ -24,12 +24,12 @@ class Binomial
      * @param int $k
      * @return float
      */
-    public static function binom(int $n, int $k): float
+    public static function binom($n, $k)
     {
         return self::getProvider()->binom($n, $k);
     }
 
-    public static function getProvider(): BinomialProvider
+    public static function getProvider()
     {
         if (self::$provider === null) {
             self::$provider = self::initProvider();
@@ -41,7 +41,7 @@ class Binomial
     /**
      * @return string[]
      */
-    public static function getUsableProviderClasses(): array
+    public static function getUsableProviderClasses()
     {
         // In order of priority.  The first provider with a value of true will be used.
         $possibleProviderClasses = [
@@ -55,7 +55,7 @@ class Binomial
         return array_keys($possibleProviderClasses);
     }
 
-    private static function initProvider(): BinomialProvider
+    private static function initProvider()
     {
         $providerClasses = self::getUsableProviderClasses();
 

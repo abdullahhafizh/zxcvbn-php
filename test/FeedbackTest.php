@@ -15,7 +15,7 @@ class FeedbackTest extends TestCase
     /** @var Feedback */
     private $feedback;
 
-    public function setUp(): void
+    public function setUp()
     {
         $this->feedback = new Feedback();
     }

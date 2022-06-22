@@ -10,13 +10,13 @@ use ZxcvbnPhp\Math\Binomial;
 
 class SpatialMatch extends BaseMatch
 {
-    public const SHIFTED_CHARACTERS = '~!@#$%^&*()_+QWERTYUIOP{}|ASDFGHJKL:"ZXCVBNM<>?';
+    const SHIFTED_CHARACTERS = '~!@#$%^&*()_+QWERTYUIOP{}|ASDFGHJKL:"ZXCVBNM<>?';
 
     // Preset properties since adjacency graph is constant for qwerty keyboard and keypad.
-    public const KEYBOARD_STARTING_POSITION = 94;
-    public const KEYPAD_STARTING_POSITION = 15;
-    public const KEYBOARD_AVERAGE_DEGREES = 4.5957446809; // 432 / 94
-    public const KEYPAD_AVERAGE_DEGREES = 5.0666666667; // 76 / 15
+    const KEYBOARD_STARTING_POSITION = 94;
+    const KEYPAD_STARTING_POSITION = 15;
+    const KEYBOARD_AVERAGE_DEGREES = 4.5957446809; // 432 / 94
+    const KEYPAD_AVERAGE_DEGREES = 5.0666666667; // 76 / 15
 
     public $pattern = 'spatial';
 
@@ -40,7 +40,7 @@ class SpatialMatch extends BaseMatch
      * @param array $graphs
      * @return SpatialMatch[]
      */
-    public static function match(string $password, array $userInputs = [], array $graphs = []): array
+    public static function match($password, $userInputs = [], $graphs = [])
     {
 
         $matches = [];
@@ -59,7 +59,7 @@ class SpatialMatch extends BaseMatch
     }
 
     #[ArrayShape(['warning' => 'string', 'suggestions' => 'string[]'])]
-    public function getFeedback(bool $isSoleMatch): array
+    public function getFeedback($isSoleMatch)
     {
         $warning = $this->turns == 1
             ? 'Straight rows of keys are easy to guess'
@@ -80,13 +80,18 @@ class SpatialMatch extends BaseMatch
      * @param string $token
      * @param array $params An array with keys: [graph (required), shifted_count, turns].
      */
-    public function __construct(string $password, int $begin, int $end, string $token, array $params = [])
+    public function __construct($password, $begin, $end, $token, $params = [])
     {
         parent::__construct($password, $begin, $end, $token);
         $this->graph = $params['graph'];
         if (!empty($params)) {
-            $this->shiftedCount = $params['shifted_count'] ?? null;
-            $this->turns = $params['turns'] ?? null;
+            $shiftedCount = null;
+            if(!empty($params['shiftedCount'])) $shiftedCount = $params['shiftedCount'];
+            $this->shiftedCount = $shiftedCount;
+
+            $turns = null;
+            if(!empty($params['turns'])) $turns = $params['turns'];
+            $this->turns = $turns;
         }
     }
 
@@ -97,7 +102,7 @@ class SpatialMatch extends BaseMatch
      * @param string $graphName
      * @return array
      */
-    protected static function graphMatch(string $password, array $graph, string $graphName): array
+    protected static function graphMatch($password, $graph, $graphName)
     {
         $result = [];
         $i = 0;
@@ -121,7 +126,8 @@ class SpatialMatch extends BaseMatch
                 $prevChar = mb_substr($password, $j - 1, 1);
                 $found = false;
                 $curDirection = -1;
-                $adjacents = $graph[$prevChar] ?? [];
+                $adjacents = [];
+                if(!empty($graph[$prevChar])) $adjacents = $graph[$prevChar];
 
                 // Consider growing pattern by one character if j hasn't gone over the edge.
                 if ($j < $passwordLength) {
@@ -187,7 +193,7 @@ class SpatialMatch extends BaseMatch
      *
      * @return int
      */
-    protected static function indexOf(string $string, string $char): int
+    protected static function indexOf($string, $char)
     {
         $pos = mb_strpos($string, $char);
         return ($pos === false ? -1 : $pos);
@@ -198,7 +204,7 @@ class SpatialMatch extends BaseMatch
      *
      * @return array
      */
-    public static function getAdjacencyGraphs(): array
+    public static function getAdjacencyGraphs()
     {
         if (empty(self::$adjacencyGraphs)) {
             $json = file_get_contents(dirname(__FILE__) . '/adjacency_graphs.json');
@@ -219,7 +225,7 @@ class SpatialMatch extends BaseMatch
         return self::$adjacencyGraphs;
     }
 
-    protected function getRawGuesses(): float
+    protected function getRawGuesses()
     {
         if ($this->graph === 'qwerty' || $this->graph === 'dvorak') {
             $startingPosition = self::KEYBOARD_STARTING_POSITION;

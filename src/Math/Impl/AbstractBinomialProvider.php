@@ -8,7 +8,7 @@ use ZxcvbnPhp\Math\BinomialProvider;
 
 abstract class AbstractBinomialProvider implements BinomialProvider
 {
-    public function binom(int $n, int $k): float
+    public function binom($n, $k)
     {
         if ($k < 0 || $n < 0) {
             throw new \DomainException("n and k must be non-negative");
@@ -24,5 +24,5 @@ abstract class AbstractBinomialProvider implements BinomialProvider
         return $this->calculate($n, $k);
     }
 
-    abstract protected function calculate(int $n, int $k): float;
+    abstract protected function calculate($n, $k);
 }

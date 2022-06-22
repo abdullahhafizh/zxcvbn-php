@@ -19,7 +19,7 @@ class L33tTest extends AbstractMatchTest
 
     // Generally we only need to test the public interface of the matchers, but it can be useful
     // to occasionally test protected methods to ensure consistency with upstream.
-    protected static function callProtectedMethod(string $name, array $args)
+    protected static function callProtectedMethod($name, $args)
     {
         $class = new ReflectionClass('\\ZxcvbnPhp\\Test\\Matchers\\MockL33tMatch');
         $method = $class->getMethod($name);
@@ -27,7 +27,7 @@ class L33tTest extends AbstractMatchTest
         return $method->invokeArgs(null, $args);
     }
 
-    public function testReducesL33tTable(): void
+    public function testReducesL33tTable()
     {
         $cases = [
             ''      => [] ,
@@ -56,7 +56,7 @@ class L33tTest extends AbstractMatchTest
         }
     }
 
-    public function testEnumeratesL33tSubstitutions(): void
+    public function testEnumeratesL33tSubstitutions()
     {
         $cases = [
             [
@@ -84,7 +84,7 @@ class L33tTest extends AbstractMatchTest
         }
     }
 
-    public function testEmptyString(): void
+    public function testEmptyString()
     {
         $this->assertSame(
             [],
@@ -93,7 +93,7 @@ class L33tTest extends AbstractMatchTest
         );
     }
 
-    public function testPureDictionaryWords(): void
+    public function testPureDictionaryWords()
     {
         $this->assertSame(
             [],
@@ -102,7 +102,7 @@ class L33tTest extends AbstractMatchTest
         );
     }
 
-    public function testPureDictionaryWordsWithL33tCharactersAfter(): void
+    public function testPureDictionaryWordsWithL33tCharactersAfter()
     {
         $this->assertSame(
             [],
@@ -111,7 +111,7 @@ class L33tTest extends AbstractMatchTest
         );
     }
 
-    public function testCapitalizedDictionaryWordsWithL33tCharactersAfter(): void
+    public function testCapitalizedDictionaryWordsWithL33tCharactersAfter()
     {
         $this->assertSame(
             [],
@@ -120,7 +120,7 @@ class L33tTest extends AbstractMatchTest
         );
     }
 
-    public function commonCaseProvider(): array
+    public function commonCaseProvider()
     {
         return [
             [
@@ -163,7 +163,7 @@ class L33tTest extends AbstractMatchTest
      * @param int[] $ij
      * @param array $substitutions
      */
-    public function testCommonL33tSubstitutions(string $password, string $pattern, string $word, string $dictionary, int $rank, array $ij, array $substitutions): void
+    public function testCommonL33tSubstitutions($password, $pattern, $word, $dictionary, $rank, $ij, $substitutions)
     {
         $this->checkMatches(
             "matches against common l33t substitutions",
@@ -181,7 +181,7 @@ class L33tTest extends AbstractMatchTest
         );
     }
 
-    public function testOverlappingL33tPatterns(): void
+    public function testOverlappingL33tPatterns()
     {
         $this->checkMatches(
             "matches against overlapping l33t patterns",
@@ -203,7 +203,7 @@ class L33tTest extends AbstractMatchTest
         );
     }
 
-    public function testMultipleL33tSubstitutions(): void
+    public function testMultipleL33tSubstitutions()
     {
         $this->assertSame(
             [],
@@ -212,7 +212,7 @@ class L33tTest extends AbstractMatchTest
         );
     }
 
-    public function testSingleCharacterL33tWords(): void
+    public function testSingleCharacterL33tWords()
     {
         $this->assertSame(
             [],
@@ -221,7 +221,7 @@ class L33tTest extends AbstractMatchTest
         );
     }
 
-    public function testSubstitutionSubsets(): void
+    public function testSubstitutionSubsets()
     {
         // From the coffeescript source:
         //
@@ -285,7 +285,7 @@ class L33tTest extends AbstractMatchTest
         );
     }
 
-    public function variationsProvider(): array
+    public function variationsProvider()
     {
         return [
             [ '',  1, [] ],
@@ -309,7 +309,7 @@ class L33tTest extends AbstractMatchTest
      * @param float  $expectedGuesses
      * @param array  $substitutions
      */
-    public function testGuessesL33tVariations(string $token, float $expectedGuesses, array $substitutions): void
+    public function testGuessesL33tVariations($token, $expectedGuesses, $substitutions)
     {
         $match = new L33tMatch($token, 0, strlen($token) - 1, $token, ['rank' => 1, 'sub' => $substitutions]);
         $this->assertSame(
@@ -323,7 +323,7 @@ class L33tTest extends AbstractMatchTest
      * This test is not strictly needed as it's testing an internal detail, but it's included to match an upstream test.
      * @link https://github.com/dropbox/zxcvbn/blob/master/test/test-scoring.coffee#L357
      */
-    public function testCapitalisationNotAffectingL33t(): void
+    public function testCapitalisationNotAffectingL33t()
     {
         $token = 'Aa44aA';
         $match = new L33tMatch($token, 0, strlen($token) - 1, $token, ['rank' => 1, 'sub' => ['4' => 'a']]);
@@ -338,7 +338,7 @@ class L33tTest extends AbstractMatchTest
         $this->assertSame($expected, $actual, "capitalization doesn't affect extra l33t guesses calc");
     }
 
-    public function testFeedback(): void
+    public function testFeedback()
     {
         $token = 'univer5ity';
         $match = new L33tMatch($token, 0, strlen($token) - 1, $token, [
@@ -360,7 +360,7 @@ class L33tTest extends AbstractMatchTest
         );
     }
 
-    public function testFeedbackTop100Password(): void
+    public function testFeedbackTop100Password()
     {
         $token = 'hunt3r';
         $match = new L33tMatch($token, 0, strlen($token) - 1, $token, [

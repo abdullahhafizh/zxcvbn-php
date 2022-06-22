@@ -16,9 +16,9 @@ interface MatchInterface
      *
      * @return array|BaseMatch[] Array of Match objects
      */
-    public static function match(string $password, array $userInputs = []): array;
+    public static function match($password, $userInputs = []);
 
-    public function getGuesses(): float;
+    public function getGuesses();
 
-    public function getGuessesLog10(): float;
+    public function getGuessesLog10();
 }

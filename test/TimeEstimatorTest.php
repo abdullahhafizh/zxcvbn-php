@@ -12,7 +12,7 @@ class TimeEstimatorTest extends TestCase
     /** @var TimeEstimator */
     private $timeEstimator;
 
-    public function setUp(): void
+    public function setUp()
     {
         $this->timeEstimator = new TimeEstimator();
     }

@@ -20,7 +20,7 @@ class ReverseDictionaryMatch extends DictionaryMatch
      * @param array $rankedDictionaries
      * @return ReverseDictionaryMatch[]
      */
-    public static function match(string $password, array $userInputs = [], array $rankedDictionaries = []): array
+    public static function match($password, $userInputs = [], $rankedDictionaries = [])
     {
         /** @var ReverseDictionaryMatch[] $matches */
         $matches = parent::match(self::mbStrRev($password), $userInputs, $rankedDictionaries);
@@ -37,13 +37,13 @@ class ReverseDictionaryMatch extends DictionaryMatch
         return $matches;
     }
 
-    protected function getRawGuesses(): float
+    protected function getRawGuesses()
     {
         return parent::getRawGuesses() * 2;
     }
 
     #[ArrayShape(['warning' => 'string', 'suggestions' => 'string[]'])]
-    public function getFeedback(bool $isSoleMatch): array
+    public function getFeedback($isSoleMatch)
     {
         $feedback = parent::getFeedback($isSoleMatch);
 
@@ -54,7 +54,7 @@ class ReverseDictionaryMatch extends DictionaryMatch
         return $feedback;
     }
 
-    public static function mbStrRev(string $string, string $encoding = null): string
+    public static function mbStrRev($string, $encoding = null)
     {
         if ($encoding === null) {
             $encoding = mb_detect_encoding($string) ?: 'UTF-8';

@@ -15,7 +15,7 @@ use ZxcvbnPhp\Scorer;
  */
 class Bruteforce extends BaseMatch
 {
-    public const BRUTEFORCE_CARDINALITY = 10;
+    const BRUTEFORCE_CARDINALITY = 10;
 
     public $pattern = 'bruteforce';
 
@@ -24,7 +24,7 @@ class Bruteforce extends BaseMatch
      * @param array $userInputs
      * @return Bruteforce[]
      */
-    public static function match(string $password, array $userInputs = []): array
+    public static function match($password, $userInputs = [])
     {
         // Matches entire string.
         $match = new static($password, 0, mb_strlen($password) - 1, $password);
@@ -33,7 +33,7 @@ class Bruteforce extends BaseMatch
 
 
     #[ArrayShape(['warning' => 'string', 'suggestions' => 'string[]'])]
-    public function getFeedback(bool $isSoleMatch): array
+    public function getFeedback($isSoleMatch)
     {
         return [
             'warning' => "",
@@ -42,7 +42,7 @@ class Bruteforce extends BaseMatch
         ];
     }
 
-    public function getRawGuesses(): float
+    public function getRawGuesses()
     {
         $guesses = pow(self::BRUTEFORCE_CARDINALITY, mb_strlen($this->token));
         if ($guesses === INF) {

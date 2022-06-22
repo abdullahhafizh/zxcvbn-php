@@ -16,7 +16,7 @@ class TimeEstimator
      * @param int|float $guesses
      * @return array
      */
-    public function estimateAttackTimes(float $guesses): array
+    public function estimateAttackTimes($guesses)
     {
         $crack_times_seconds = [
             'online_throttling_100_per_hour' => $guesses / (100 / 3600),
@@ -37,7 +37,7 @@ class TimeEstimator
         ];
     }
 
-    protected function guessesToScore(float $guesses): int
+    protected function guessesToScore($guesses)
     {
         $DELTA = 5;
 
@@ -66,9 +66,9 @@ class TimeEstimator
         return 4;
     }
 
-    protected function displayTime(float $seconds): string
+    protected function displayTime($seconds)
     {
-        $callback = function (float $seconds): array {
+        $callback = function ($seconds) {
             $minute = 60;
             $hour = $minute * 60;
             $day = $hour * 24;
@@ -113,7 +113,7 @@ class TimeEstimator
             return [null, 'centuries'];
         };
 
-        [$display_num, $display_str] = $callback($seconds);
+        list($display_num, $display_str) = $callback($seconds);
 
         if ($display_num > 1) {
             $display_str .= 's';

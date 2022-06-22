@@ -8,12 +8,12 @@ use TypeError;
 
 class BinomialProviderInt64 extends AbstractBinomialProviderWithFallback
 {
-    protected function initFallbackProvider(): AbstractBinomialProvider
+    protected function initFallbackProvider()
     {
         return new BinomialProviderFloat64();
     }
 
-    protected function tryCalculate(int $n, int $k): ?float
+    protected function tryCalculate($n, $k)
     {
         try {
             $c = 1;

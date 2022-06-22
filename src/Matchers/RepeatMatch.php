@@ -10,9 +10,9 @@ use ZxcvbnPhp\Scorer;
 
 class RepeatMatch extends BaseMatch
 {
-    public const GREEDY_MATCH = '/(.+)\1+/u';
-    public const LAZY_MATCH = '/(.+?)\1+/u';
-    public const ANCHORED_LAZY_MATCH = '/^(.+?)\1+$/u';
+    const GREEDY_MATCH = '/(.+)\1+/u';
+    const LAZY_MATCH = '/(.+?)\1+/u';
+    const ANCHORED_LAZY_MATCH = '/^(.+?)\1+$/u';
 
     public $pattern = 'repeat';
 
@@ -35,7 +35,7 @@ class RepeatMatch extends BaseMatch
      * @param array $userInputs
      * @return RepeatMatch[]
      */
-    public static function match(string $password, array $userInputs = []): array
+    public static function match($password, $userInputs = [])
     {
         $matches = [];
         $lastIndex = 0;
@@ -86,7 +86,7 @@ class RepeatMatch extends BaseMatch
     }
 
     #[ArrayShape(['warning' => 'string', 'suggestions' => 'string[]'])]
-    public function getFeedback(bool $isSoleMatch): array
+    public function getFeedback($isSoleMatch)
     {
         $warning = mb_strlen($this->repeatedChar) == 1
             ? 'Repeats like "aaa" are easy to guess'
@@ -107,18 +107,29 @@ class RepeatMatch extends BaseMatch
      * @param string $token
      * @param array $params An array with keys: [repeated_char, base_guesses, base_matches, repeat_count].
      */
-    public function __construct(string $password, int $begin, int $end, string $token, array $params = [])
+    public function __construct($password, $begin, $end, $token, $params = [])
     {
         parent::__construct($password, $begin, $end, $token);
         if (!empty($params)) {
-            $this->repeatedChar = $params['repeated_char'] ?? '';
-            $this->baseGuesses = $params['base_guesses'] ?? 0;
-            $this->baseMatches = $params['base_matches'] ?? [];
-            $this->repeatCount = $params['repeat_count'] ?? 0;
+            $repeatedChar = '';
+            if(!empty($params['repeated_char'])) $repeatedChar = $params['repeated_char'];
+            $this->repeatedChar = $repeatedChar;
+
+            $baseGuesses = 0;
+            if(!empty($params['base_guesses'])) $baseGuesses = $params['base_guesses'];
+            $this->baseGuesses = $baseGuesses;
+
+            $baseMatches = [];
+            if(!empty($params['base_matches'])) $baseMatches = $params['base_matches'];
+            $this->baseMatches = $baseMatches;
+
+            $repeatCount = 0;
+            if(!empty($params['repeat_count'])) $repeatCount = $params['repeat_count'];
+            $this->repeatCount = $repeatCount;
         }
     }
 
-    protected function getRawGuesses(): float
+    protected function getRawGuesses()
     {
         return $this->baseGuesses * $this->repeatCount;
     }

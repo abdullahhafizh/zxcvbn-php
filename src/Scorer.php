@@ -16,9 +16,9 @@ use ZxcvbnPhp\Matchers\MatchInterface;
  */
 class Scorer
 {
-    public const MIN_GUESSES_BEFORE_GROWING_SEQUENCE = 10000;
-    public const MIN_SUBMATCH_GUESSES_SINGLE_CHAR = 10;
-    public const MIN_SUBMATCH_GUESSES_MULTI_CHAR = 50;
+    const MIN_GUESSES_BEFORE_GROWING_SEQUENCE = 10000;
+    const MIN_SUBMATCH_GUESSES_SINGLE_CHAR = 10;
+    const MIN_SUBMATCH_GUESSES_MULTI_CHAR = 50;
 
     protected $password;
     protected $excludeAdditive;
@@ -61,7 +61,7 @@ class Scorer
      * @param bool $excludeAdditive
      * @return array Returns an array with these keys: [password, guesses, guesses_log10, sequence]
      */
-    public function getMostGuessableMatchSequence(string $password, array $matches, bool $excludeAdditive = false): array
+    public function getMostGuessableMatchSequence($password, $matches, $excludeAdditive = false)
     {
         $this->password = $password;
         $this->excludeAdditive = $excludeAdditive;
@@ -138,7 +138,7 @@ class Scorer
      * @param BaseMatch $match
      * @param int $length
      */
-    protected function update(BaseMatch $match, int $length): void
+    protected function update($match, $length)
     {
         $k = $match->end;
 
@@ -186,7 +186,7 @@ class Scorer
      * helper: evaluate bruteforce matches ending at k
      * @param int $end
      */
-    protected function bruteforceUpdate(int $end): void
+    protected function bruteforceUpdate($end)
     {
         // see if a single bruteforce match spanning the k-prefix is optimal.
         $match = $this->makeBruteforceMatch(0, $end);
@@ -219,7 +219,7 @@ class Scorer
      * @param int $end
      * @return Bruteforce
      */
-    protected function makeBruteforceMatch(int $begin, int $end): Bruteforce
+    protected function makeBruteforceMatch($begin, $end)
     {
         return new Bruteforce($this->password, $begin, $end, mb_substr($this->password, $begin, $end - $begin + 1));
     }
@@ -229,7 +229,7 @@ class Scorer
      * @param int $n
      * @return MatchInterface[]
      */
-    protected function unwind(int $n): array
+    protected function unwind($n)
     {
         $optimalSequence = [];
         $k = $n - 1;
@@ -260,7 +260,7 @@ class Scorer
      * @param int $n
      * @return int
      */
-    protected function factorial(int $n): int
+    protected function factorial($n)
     {
         if ($n < 2) {
             return 1;

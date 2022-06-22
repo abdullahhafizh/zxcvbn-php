@@ -14,7 +14,7 @@ class MatchTest extends TestCase
      * @param float $guesses
      * @return MockObject|DateMatch
      */
-    private function getMatchMock(float $guesses)
+    private function getMatchMock($guesses)
     {
         $stub = $this->getMockBuilder(DateMatch::class)
             ->disableOriginalConstructor()
@@ -28,7 +28,7 @@ class MatchTest extends TestCase
     /**
      * @return float[][]
      */
-    public function log10Provider(): array
+    public function log10Provider()
     {
         return [
             [1.0, 0.0],
@@ -43,7 +43,7 @@ class MatchTest extends TestCase
      * @param float $n
      * @param float $expected
      */
-    public function testGuessesLog10(float $n, float $expected): void
+    public function testGuessesLog10($n, $expected)
     {
         $stub = $this->getMatchMock($n);
         $this->assertSame($expected, $stub->getGuessesLog10(), "log10 guesses");

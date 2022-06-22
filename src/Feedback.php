@@ -19,7 +19,7 @@ class Feedback
      * @param MatchInterface[] $sequence
      * @return array
      */
-    public function getFeedback(int $score, array $sequence): array
+    public function getFeedback($score, $sequence)
     {
         // starting feedback
         if (count($sequence) === 0) {

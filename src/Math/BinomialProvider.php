@@ -13,5 +13,5 @@ interface BinomialProvider
      * @param int $k
      * @return float
      */
-    public function binom(int $n, int $k): float;
+    public function binom($n, $k);
 }

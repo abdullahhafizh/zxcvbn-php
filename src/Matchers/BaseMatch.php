@@ -35,7 +35,7 @@ abstract class BaseMatch implements MatchInterface
      */
     public $pattern;
 
-    public function __construct(string $password, int $begin, int $end, string $token)
+    public function __construct($password, $begin, $end, $token)
     {
         $this->password = $password;
         $this->begin = $begin;
@@ -52,7 +52,7 @@ abstract class BaseMatch implements MatchInterface
      *   Associative array with warning (string) and suggestions (array of strings)
      */
     #[ArrayShape(['warning' => 'string', 'suggestions' => 'string[]'])]
-    abstract public function getFeedback(bool $isSoleMatch): array;
+    abstract public function getFeedback($isSoleMatch);
 
     /**
      * Find all occurrences of regular expression in a string.
@@ -76,7 +76,7 @@ abstract class BaseMatch implements MatchInterface
      *       )
      *     )
      */
-    public static function findAll(string $string, string $regex, int $offset = 0): array
+    public static function findAll($string, $regex, $offset = 0)
     {
         // $offset is the number of multibyte-aware number of characters to offset, but the offset parameter for
         // preg_match_all counts bytes, not characters: to correct this, we need to calculate the byte offset and pass
@@ -123,19 +123,19 @@ abstract class BaseMatch implements MatchInterface
      * @return float
      * @deprecated Use {@see Binomial::binom()} instead
      */
-    public static function binom(int $n, int $k): float
+    public static function binom($n, $k)
     {
         return Binomial::binom($n, $k);
     }
 
-    abstract protected function getRawGuesses(): float;
+    abstract protected function getRawGuesses();
 
-    public function getGuesses(): float
+    public function getGuesses()
     {
         return max($this->getRawGuesses(), $this->getMinimumGuesses());
     }
 
-    protected function getMinimumGuesses(): float
+    protected function getMinimumGuesses()
     {
         if (mb_strlen($this->token) < mb_strlen($this->password)) {
             if (mb_strlen($this->token) === 1) {
@@ -147,7 +147,7 @@ abstract class BaseMatch implements MatchInterface
         return 0;
     }
 
-    public function getGuessesLog10(): float
+    public function getGuessesLog10()
     {
         return log10($this->getGuesses());
     }

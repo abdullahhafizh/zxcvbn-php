@@ -6,7 +6,7 @@ namespace ZxcvbnPhp\Math\Impl;
 
 class BinomialProviderFloat64 extends AbstractBinomialProvider
 {
-    protected function calculate(int $n, int $k): float
+    protected function calculate($n, $k)
     {
         $c = 1.0;
 

@@ -15,7 +15,7 @@ class ZxcvbnTest extends TestCase
     /** @var Zxcvbn */
     private $zxcvbn;
 
-    public function setUp(): void
+    public function setUp()
     {
         $this->zxcvbn = new Zxcvbn();
     }
@@ -96,7 +96,7 @@ class ZxcvbnTest extends TestCase
      * @param string $slowHashingDisplay
      * @param float $guesses
      */
-    public function testZxcvbnSanityCheck(string $password, int $score, array $patterns, string $slowHashingDisplay, float $guesses): void
+    public function testZxcvbnSanityCheck($password, $score, $patterns, $slowHashingDisplay, $guesses)
     {
         $result = $this->zxcvbn->passwordStrength($password);
 

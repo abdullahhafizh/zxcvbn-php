@@ -28,7 +28,7 @@ class DictionaryTest extends AbstractMatchTest
     /**
      * @return string[][]
      */
-    public function madeUpWordsProvider(): array
+    public function madeUpWordsProvider()
     {
         return [
             ['jjj'],
@@ -40,13 +40,13 @@ class DictionaryTest extends AbstractMatchTest
      * @dataProvider madeUpWordsProvider
      * @param string $password
      */
-    public function testWordsNotInDictionary(string $password): void
+    public function testWordsNotInDictionary($password)
     {
         $matches = DictionaryMatch::match($password);
         $this->assertEmpty($matches, "does not match non-dictionary words");
     }
 
-    public function testContainingWords(): void
+    public function testContainingWords()
     {
         $password = 'motherboard';
         $patterns = ['mother', 'motherboard', 'board'];
@@ -65,7 +65,7 @@ class DictionaryTest extends AbstractMatchTest
         );
     }
 
-    public function testOverlappingWords(): void
+    public function testOverlappingWords()
     {
         $password = 'abcdef';
         $patterns = ['abcd', 'cdef'];
@@ -84,7 +84,7 @@ class DictionaryTest extends AbstractMatchTest
         );
     }
 
-    public function testUppercasingIgnored(): void
+    public function testUppercasingIgnored()
     {
         $password = 'BoaRdZ';
         $patterns = ['BoaRd', 'Z'];
@@ -103,19 +103,19 @@ class DictionaryTest extends AbstractMatchTest
         );
     }
 
-    public function testWordsSurroundedByNonWords(): void
+    public function testWordsSurroundedByNonWords()
     {
         $prefixes = ['q', '%%'];
         $suffixes = ['%', 'qq'];
         $pattern = 'asdf1234&*';
 
-        foreach ($this->generatePasswords($pattern, $prefixes, $suffixes) as [$password, $i, $j]) {
+        foreach ($this->generatePasswords($pattern, $prefixes, $suffixes) as $value) {
             $this->checkMatches(
                 "identifies words surrounded by non-words",
-                DictionaryMatch::match($password, [], self::$testDicts),
+                DictionaryMatch::match($value[0], [], self::$testDicts),
                 'dictionary',
                 [$pattern],
-                [[$i, $j]],
+                [[$value[1], $value[2]]],
                 [
                     'matchedWord' => [$pattern],
                     'rank' => [5],
@@ -125,7 +125,7 @@ class DictionaryTest extends AbstractMatchTest
         }
     }
 
-    public function testAllDictionaryWords(): void
+    public function testAllDictionaryWords()
     {
         foreach (self::$testDicts as $dictionaryName => $dict) {
             foreach ($dict as $word => $rank) {
@@ -151,7 +151,7 @@ class DictionaryTest extends AbstractMatchTest
         }
     }
 
-    public function testDefaultDictionary(): void
+    public function testDefaultDictionary()
     {
         $password = 'wow';
         $patterns = [$password];
@@ -170,7 +170,7 @@ class DictionaryTest extends AbstractMatchTest
         );
     }
 
-    public function testUserProvidedInput(): void
+    public function testUserProvidedInput()
     {
         $password = 'foobar';
         $patterns = ['foo', 'bar'];
@@ -193,7 +193,7 @@ class DictionaryTest extends AbstractMatchTest
         );
     }
 
-    public function testUserProvidedInputInNoOtherDictionary(): void
+    public function testUserProvidedInputInNoOtherDictionary()
     {
         $password = '39kx9.1x0!3n6';
         $this->checkMatches(
@@ -209,7 +209,7 @@ class DictionaryTest extends AbstractMatchTest
         );
     }
 
-    public function testMatchesInMultipleDictionaries(): void
+    public function testMatchesInMultipleDictionaries()
     {
         $password = 'pass';
         $this->checkMatches(
@@ -224,13 +224,13 @@ class DictionaryTest extends AbstractMatchTest
         );
     }
 
-    public function testGuessesBaseRank(): void
+    public function testGuessesBaseRank()
     {
         $match = new DictionaryMatch('aaaaa', 0, 5, 'aaaaaa', ['rank' => 32]);
         $this->assertSame(32.0, $match->getGuesses(), "base guesses == the rank");
     }
 
-    public function testGuessesCapitalization(): void
+    public function testGuessesCapitalization()
     {
         $match = new DictionaryMatch('AAAaaa', 0, 5, 'AAAaaa', ['rank' => 32]);
         $expected = 32.0 * 41;    // rank * uppercase variations
@@ -240,7 +240,7 @@ class DictionaryTest extends AbstractMatchTest
     /**
      * @return array[]
      */
-    public function uppercaseVariationProvider(): array
+    public function uppercaseVariationProvider()
     {
         return [
             [ '',       1 ],
@@ -263,7 +263,7 @@ class DictionaryTest extends AbstractMatchTest
      * @param string $token
      * @param float $expectedGuesses
      */
-    public function testGuessesUppercaseVariations(string $token, float $expectedGuesses): void
+    public function testGuessesUppercaseVariations($token, $expectedGuesses)
     {
         $match = new DictionaryMatch($token, 0, strlen($token) - 1, $token, ['rank' => 1]);
         $this->assertSame(
@@ -273,7 +273,7 @@ class DictionaryTest extends AbstractMatchTest
         );
     }
 
-    public function testFeedbackTop10Password(): void
+    public function testFeedbackTop10Password()
     {
         $feedback = $this->getFeedbackForToken('password', 'passwords', 2, true);
         $this->assertSame(
@@ -283,7 +283,7 @@ class DictionaryTest extends AbstractMatchTest
         );
     }
 
-    public function testFeedbackTop100Password(): void
+    public function testFeedbackTop100Password()
     {
         $feedback = $this->getFeedbackForToken('hunter', 'passwords', 37, true);
         $this->assertSame(
@@ -293,7 +293,7 @@ class DictionaryTest extends AbstractMatchTest
         );
     }
 
-    public function testFeedbackTopPasswordSoleMatch(): void
+    public function testFeedbackTopPasswordSoleMatch()
     {
         $feedback = $this->getFeedbackForToken('mytruck', 'passwords', 19324, true);
         $this->assertSame(
@@ -303,7 +303,7 @@ class DictionaryTest extends AbstractMatchTest
         );
     }
 
-    public function testFeedbackTopPasswordNotSoleMatch(): void
+    public function testFeedbackTopPasswordNotSoleMatch()
     {
         $feedback = $this->getFeedbackForToken('browndog', 'passwords', 7014, false);
         $this->assertSame(
@@ -313,7 +313,7 @@ class DictionaryTest extends AbstractMatchTest
         );
     }
 
-    public function testFeedbackTopPasswordNotSoleMatchRankTooLow(): void
+    public function testFeedbackTopPasswordNotSoleMatchRankTooLow()
     {
         $feedback = $this->getFeedbackForToken('mytruck', 'passwords', 19324, false);
         $this->assertSame(
@@ -323,7 +323,7 @@ class DictionaryTest extends AbstractMatchTest
         );
     }
 
-    public function testFeedbackWikipediaWordSoleMatch(): void
+    public function testFeedbackWikipediaWordSoleMatch()
     {
         $feedback = $this->getFeedbackForToken('university', 'english_wikipedia', 69, true);
         $this->assertSame(
@@ -333,7 +333,7 @@ class DictionaryTest extends AbstractMatchTest
         );
     }
 
-    public function testFeedbackWikipediaWordNonSoleMatch(): void
+    public function testFeedbackWikipediaWordNonSoleMatch()
     {
         $feedback = $this->getFeedbackForToken('university', 'english_wikipedia', 69, false);
         $this->assertSame(
@@ -343,7 +343,7 @@ class DictionaryTest extends AbstractMatchTest
         );
     }
 
-    public function testFeedbackNameSoleMatch(): void
+    public function testFeedbackNameSoleMatch()
     {
         $feedback = $this->getFeedbackForToken('rodriguez', 'surnames', 21, true);
         $this->assertSame(
@@ -353,7 +353,7 @@ class DictionaryTest extends AbstractMatchTest
         );
     }
 
-    public function testFeedbackNameNonSoleMatch(): void
+    public function testFeedbackNameNonSoleMatch()
     {
         $feedback = $this->getFeedbackForToken('rodriguez', 'surnames', 21, false);
         $this->assertSame(
@@ -363,7 +363,7 @@ class DictionaryTest extends AbstractMatchTest
         );
     }
 
-    public function testFeedbackTvAndFilmDictionary(): void
+    public function testFeedbackTvAndFilmDictionary()
     {
         $feedback = $this->getFeedbackForToken('know', 'us_tv_and_film', 9, true);
         $this->assertSame(
@@ -373,7 +373,7 @@ class DictionaryTest extends AbstractMatchTest
         );
     }
 
-    public function testFeedbackAllUppercaseWord(): void
+    public function testFeedbackAllUppercaseWord()
     {
         $feedback = $this->getFeedbackForToken('PASSWORD', 'passwords', 2, true);
         $this->assertContains(
@@ -383,7 +383,7 @@ class DictionaryTest extends AbstractMatchTest
         );
     }
 
-    public function testFeedbackWordStartsWithUppercase(): void
+    public function testFeedbackWordStartsWithUppercase()
     {
         $feedback = $this->getFeedbackForToken('Password', 'passwords', 2, true);
         $this->assertContains(
@@ -400,7 +400,7 @@ class DictionaryTest extends AbstractMatchTest
      * @param bool $soleMatch
      * @return array
      */
-    private function getFeedbackForToken(string $token, string $dictionary, int $rank, bool $soleMatch): array
+    private function getFeedbackForToken($token, $dictionary, $rank, $soleMatch)
     {
         $match = new DictionaryMatch($token, 0, strlen($token) - 1, $token, [
             'dictionary_name' => $dictionary,

@@ -46,7 +46,7 @@ class BinomialTest extends TestCase
      * @param int   $k
      * @param float $expected
      */
-    public function testBinomialCoefficient(int $n, int $k, float $expected)
+    public function testBinomialCoefficient($n, $k, $expected)
     {
         foreach (Binomial::getUsableProviderClasses() as $providerClass) {
             $provider = new $providerClass();

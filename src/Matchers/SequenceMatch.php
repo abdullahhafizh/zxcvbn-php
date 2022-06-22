@@ -8,7 +8,7 @@ use JetBrains\PhpStorm\ArrayShape;
 
 class SequenceMatch extends BaseMatch
 {
-    public const MAX_DELTA = 5;
+    const MAX_DELTA = 5;
 
     public $pattern = 'sequence';
 
@@ -28,7 +28,7 @@ class SequenceMatch extends BaseMatch
      * @param array $userInputs
      * @return SequenceMatch[]
      */
-    public static function match(string $password, array $userInputs = []): array
+    public static function match($password, $userInputs = [])
     {
         $matches = [];
         $passwordLength = mb_strlen($password);
@@ -59,7 +59,7 @@ class SequenceMatch extends BaseMatch
         return $matches;
     }
 
-    public static function findSequenceMatch(string $password, int $begin, int $end, int $delta, array &$matches)
+    public static function findSequenceMatch($password, $begin, $end, $delta, &$matches)
     {
         if ($end - $begin > 1 || abs($delta) === 1) {
             if (abs($delta) > 0 && abs($delta) <= self::MAX_DELTA) {
@@ -88,7 +88,7 @@ class SequenceMatch extends BaseMatch
     }
 
     #[ArrayShape(['warning' => 'string', 'suggestions' => 'string[]'])]
-    public function getFeedback(bool $isSoleMatch): array
+    public function getFeedback($isSoleMatch)
     {
         return [
             'warning' => "Sequences like abc or 6543 are easy to guess",
@@ -105,17 +105,25 @@ class SequenceMatch extends BaseMatch
      * @param string $token
      * @param array $params An array with keys: [sequenceName, sequenceSpace, ascending].
      */
-    public function __construct(string $password, int $begin, int $end, string $token, array $params = [])
+    public function __construct($password, $begin, $end, $token, $params = [])
     {
         parent::__construct($password, $begin, $end, $token);
         if (!empty($params)) {
-            $this->sequenceName = $params['sequenceName'] ?? '';
-            $this->sequenceSpace = $params['sequenceSpace'] ?? 0;
-            $this->ascending = $params['ascending'] ?? false;
+            $sequenceName = '';
+            if(!empty($params['sequenceName'])) $sequenceName = $params['sequenceName'];
+            $this->sequenceName = $sequenceName;
+
+            $sequenceSpace = 0;
+            if(!empty($params['sequenceSpace'])) $sequenceSpace = $params['sequenceSpace'];
+            $this->sequenceSpace = $sequenceSpace;
+
+            $ascending = false;
+            if(!empty($params['ascending'])) $ascending = $params['ascending'];
+            $this->ascending = $ascending;
         }
     }
 
-    protected function getRawGuesses(): float
+    protected function getRawGuesses()
     {
         $firstCharacter = mb_substr($this->token, 0, 1);
         $guesses = 0;

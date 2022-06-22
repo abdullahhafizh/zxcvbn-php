@@ -39,7 +39,7 @@ class Zxcvbn
         $this->feedback = new \ZxcvbnPhp\Feedback();
     }
 
-    public function addMatcher(string $className): self
+    public function addMatcher($className)
     {
         $this->matcher->addMatcher($className);
 
@@ -58,7 +58,7 @@ class Zxcvbn
      *               match_sequence
      *               score
      */
-    public function passwordStrength(string $password, array $userInputs = []): array
+    public function passwordStrength($password, $userInputs = [])
     {
         $timeStart = microtime(true);
 

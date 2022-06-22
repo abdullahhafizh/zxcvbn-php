@@ -31,13 +31,13 @@ class RepeatTest extends AbstractMatchTest
         $suffixes = ['u', 'u%7'];
         $pattern = '&&&&&';
 
-        foreach ($this->generatePasswords($pattern, $prefixes, $suffixes) as [$password, $i, $j]) {
+        foreach ($this->generatePasswords($pattern, $prefixes, $suffixes) as $value) {
             $this->checkMatches(
                 "matches embedded repeat patterns",
-                RepeatMatch::match($password),
+                RepeatMatch::match($value[0]),
                 'repeat',
                 [$pattern],
-                [[$i, $j]],
+                [[$value[1], $value[2]]],
                 [
                     'repeatedChar' => ['&'],
                     'repeatCount' => [5],
@@ -258,7 +258,7 @@ class RepeatTest extends AbstractMatchTest
      * @param int    $repeatCount
      * @param float  $expectedGuesses
      */
-    public function testGuesses(string $token, string $repeatedChar, int $repeatCount, float $expectedGuesses): void
+    public function testGuesses($token, $repeatedChar, $repeatCount, $expectedGuesses)
     {
         $scorer = new Scorer();
         $matcher = new Matcher();

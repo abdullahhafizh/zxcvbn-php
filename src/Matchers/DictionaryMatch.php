@@ -30,10 +30,10 @@ class DictionaryMatch extends BaseMatch
     /** @var array A cache of the frequency_lists json file */
     protected static $rankedDictionaries = [];
 
-    protected const START_UPPER = "/^[A-Z][^A-Z]+$/u";
-    protected const END_UPPER = "/^[^A-Z]+[A-Z]$/u";
-    protected const ALL_UPPER = "/^[^a-z]+$/u";
-    protected const ALL_LOWER = "/^[^A-Z]+$/u";
+    const START_UPPER = "/^[A-Z][^A-Z]+$/u";
+    const END_UPPER = "/^[^A-Z]+[A-Z]$/u";
+    const ALL_UPPER = "/^[^a-z]+$/u";
+    const ALL_LOWER = "/^[^A-Z]+$/u";
 
     /**
      * Match occurrences of dictionary words in password.
@@ -43,7 +43,7 @@ class DictionaryMatch extends BaseMatch
      * @param array $rankedDictionaries
      * @return DictionaryMatch[]
      */
-    public static function match(string $password, array $userInputs = [], array $rankedDictionaries = []): array
+    public static function match($password, $userInputs = [], $rankedDictionaries = [])
     {
         $matches = [];
         if ($rankedDictionaries) {
@@ -77,13 +77,21 @@ class DictionaryMatch extends BaseMatch
      * @param string $token
      * @param array $params An array with keys: [dictionary_name, matched_word, rank].
      */
-    public function __construct(string $password, int $begin, int $end, string $token, array $params = [])
+    public function __construct($password, $begin, $end, $token, $params = [])
     {
         parent::__construct($password, $begin, $end, $token);
         if (!empty($params)) {
-            $this->dictionaryName = $params['dictionary_name'] ?? '';
-            $this->matchedWord = $params['matched_word'] ?? '';
-            $this->rank = $params['rank'] ?? 0;
+            $dictionaryName = '';
+            if(!empty($params['dictionary_name'])) $dictionaryName = $params['dictionary_name'];
+            $this->dictionaryName = $dictionaryName;
+
+            $matchedWord = '';
+            if(!empty($params['matched_word'])) $matchedWord = $params['matched_word'];
+            $this->matchedWord = $matchedWord;
+
+            $rank = 0;
+            if(!empty($params['rank'])) $rank = $params['rank'];
+            $this->rank = $rank;
         }
     }
 
@@ -92,7 +100,7 @@ class DictionaryMatch extends BaseMatch
      * @return array
      */
     #[ArrayShape(['warning' => 'string', 'suggestions' => 'string[]'])]
-    public function getFeedback(bool $isSoleMatch): array
+    public function getFeedback($isSoleMatch)
     {
         $startUpper = '/^[A-Z][^A-Z]+$/u';
         $allUpper = '/^[^a-z]+$/u';
@@ -111,7 +119,7 @@ class DictionaryMatch extends BaseMatch
         return $feedback;
     }
 
-    public function getFeedbackWarning(bool $isSoleMatch): string
+    public function getFeedbackWarning($isSoleMatch)
     {
         switch ($this->dictionaryName) {
             case 'passwords':
@@ -152,7 +160,7 @@ class DictionaryMatch extends BaseMatch
      * @param array $dict
      * @return array
      */
-    protected static function dictionaryMatch(string $password, array $dict): array
+    protected static function dictionaryMatch($password, $dict)
     {
         $result = [];
         $length = mb_strlen($password);
@@ -183,7 +191,7 @@ class DictionaryMatch extends BaseMatch
      *
      * @return array
      */
-    protected static function getRankedDictionaries(): array
+    protected static function getRankedDictionaries()
     {
         if (empty(self::$rankedDictionaries)) {
             $json = file_get_contents(dirname(__FILE__) . '/frequency_lists.json');
@@ -199,7 +207,7 @@ class DictionaryMatch extends BaseMatch
         return self::$rankedDictionaries;
     }
 
-    protected function getRawGuesses(): float
+    protected function getRawGuesses()
     {
         $guesses = $this->rank;
         $guesses *= $this->getUppercaseVariations();
@@ -207,7 +215,7 @@ class DictionaryMatch extends BaseMatch
         return $guesses;
     }
 
-    protected function getUppercaseVariations(): float
+    protected function getUppercaseVariations()
     {
         $word = $this->token;
         if (preg_match(self::ALL_LOWER, $word) || mb_strtolower($word) === $word) {
